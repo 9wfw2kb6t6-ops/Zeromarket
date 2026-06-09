@@ -8,7 +8,27 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAiz3GtFctV6X2F4X-AxUuOW9n7-ApuU5c",
+  authDomain: "zeromarket-3fbcb.firebaseapp.com",
+  projectId: "zeromarket-3fbcb",
+  storageBucket: "zeromarket-3fbcb.firebasestorage.app",
+  messagingSenderId: "1064897432937",
+  appId: "1:1064897432937:web:f0882e176b0d80a1de01f8",
+  measurementId: "G-RVWNDPVXBL"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700&display=swap');
 
