@@ -2,56 +2,74 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>Zeromarket Login</title>
+<title>Zeromarket Panel</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
 body{
   font-family:sans-serif;
   background:#0f172a;
   color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  text-align:center;
 }
 .box{
   background:#1e293b;
-  padding:25px;
-  border-radius:12px;
+  padding:20px;
+  margin:20px auto;
   width:300px;
+  border-radius:12px;
 }
-input{
+input,select,button{
   width:100%;
   padding:10px;
-  margin:8px 0;
+  margin:5px 0;
 }
-button{
-  width:100%;
+.card{
+  background:#334155;
+  margin:10px;
   padding:10px;
-  cursor:pointer;
+  border-radius:10px;
 }
 .hidden{display:none;}
 </style>
 </head>
 <body>
 
+<h2>🚀 Zeromarket Dashboard</h2>
+
+<!-- LOGIN -->
 <div id="loginBox" class="box">
-  <h2>Login</h2>
+  <h3>Login</h3>
   <input id="email" placeholder="email">
   <input id="password" type="password" placeholder="password">
   <button onclick="login()">Login</button>
 </div>
 
+<!-- PANEL -->
 <div id="panel" class="hidden">
-  <h1>🎉 خوش آمدی به Zeromarket</h1>
+
+  <div class="box">
+    <h3>➕ ثبت سفارش</h3>
+    <input id="name" placeholder="نام مشتری">
+    <select id="service">
+      <option>Instagram</option>
+      <option>Telegram</option>
+      <option>Design</option>
+    </select>
+    <button onclick="addOrder()">ثبت</button>
+  </div>
+
+  <h3>📦 سفارش‌ها</h3>
+  <div id="orders"></div>
+
   <button onclick="logout()">Logout</button>
 </div>
 
 <script>
-// 🔥 Firebase config (اینجا باید از کنسول خودت جایگزین کنی)
+// 🔥 Firebase Config (جایگزین کن)
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
@@ -59,35 +77,64 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // LOGIN
 function login(){
-  let email = document.getElementById('email').value;
-  let pass = document.getElementById('password').value;
-
-  auth.signInWithEmailAndPassword(email, pass)
-  .then(()=> {
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('panel').classList.remove('hidden');
-  })
-  .catch(err => alert(err.message));
+  auth.signInWithEmailAndPassword(
+    email.value,
+    password.value
+  ).then(loadPanel);
 }
 
 // LOGOUT
 function logout(){
-  auth.signOut().then(()=>{
-    location.reload();
-  });
+  auth.signOut().then(()=>location.reload());
 }
 
 // CHECK USER
 auth.onAuthStateChanged(user=>{
-  if(user){
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('panel').classList.remove('hidden');
-  }
+  if(user) loadPanel();
 });
+
+// SHOW PANEL
+function loadPanel(){
+  loginBox.classList.add('hidden');
+  panel.classList.remove('hidden');
+  loadOrders();
+}
+
+// ADD ORDER
+function addOrder(){
+  db.collection("orders").add({
+    name: name.value,
+    service: service.value,
+    date: new Date().toISOString()
+  });
+
+  name.value = "";
+  loadOrders();
+}
+
+// LOAD ORDERS
+function loadOrders(){
+  db.collection("orders").orderBy("date","desc")
+  .onSnapshot(snapshot=>{
+    orders.innerHTML = "";
+    snapshot.forEach(doc=>{
+      let d = doc.data();
+      orders.innerHTML += `
+        <div class="card">
+          👤 ${d.name}<br>
+          📌 ${d.service}<br>
+          🕒 ${d.date}
+        </div>
+      `;
+    });
+  });
+}
 </script>
 
 </body>
