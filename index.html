@@ -2,224 +2,77 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeromarket SaaS Panel</title>
+<title>Zeromarket SaaS</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAiz3GtFctV6X2F4X-AxUuOW9n7-ApuU5c",
-  authDomain: "zeromarket-3fbcb.firebaseapp.com",
-  projectId: "zeromarket-3fbcb",
-  storageBucket: "zeromarket-3fbcb.firebasestorage.app",
-  messagingSenderId: "1064897432937",
-  appId: "1:1064897432937:web:f0882e176b0d80a1de01f8",
-  measurementId: "G-RVWNDPVXBL"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700&display=swap');
-
-*{box-sizing:border-box;}
-
 body{
   margin:0;
-  font-family:'Vazirmatn', sans-serif;
-  background: radial-gradient(circle at top,#1e293b,#020617);
+  font-family:sans-serif;
+  background:#0f172a;
   color:white;
+  text-align:center;
 }
-
-/* layout */
-.container{
-  display:flex;
-  min-height:100vh;
-}
-
-/* sidebar */
-.sidebar{
-  width:260px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
-  border-right:1px solid rgba(255,255,255,0.08);
+.box{
+  background:#1e293b;
   padding:20px;
-}
-
-.logo{
-  font-size:20px;
-  font-weight:bold;
-  color:#38bdf8;
-  margin-bottom:25px;
-}
-
-.nav button{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:none;
+  margin:20px auto;
+  width:320px;
   border-radius:12px;
-  cursor:pointer;
-  background:rgba(255,255,255,0.06);
-  color:white;
-  transition:0.3s;
-  text-align:right;
 }
-
-.nav button:hover{
-  background:#38bdf8;
-  color:#001018;
-  transform:translateX(-3px);
-}
-
-/* main */
-.main{
-  flex:1;
-  padding:30px;
-}
-
-/* header */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.title{
-  font-size:24px;
-  font-weight:bold;
-}
-
-.badge{
-  padding:6px 12px;
-  background:rgba(34,197,94,0.2);
-  border:1px solid #22c55e;
-  border-radius:999px;
-  font-size:12px;
-}
-
-/* grid */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-}
-
-/* cards */
-.card{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);
-  padding:20px;
-  border-radius:18px;
-  backdrop-filter: blur(10px);
-  transition:0.3s;
-}
-
-.card:hover{
-  transform:translateY(-5px);
-  border-color:#38bdf8;
-}
-
-/* form */
-input,select,button{
+input,button,select{
   width:100%;
   padding:10px;
   margin:5px 0;
-  border-radius:10px;
-  border:none;
 }
-
-button{
-  cursor:pointer;
-}
-
-/* orders */
-.order{
-  margin-top:10px;
-  padding:10px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.04);
-}
-
-/* hidden */
 .hidden{display:none;}
-
-/* mobile */
-@media(max-width:900px){
-  .container{flex-direction:column;}
-  .grid{grid-template-columns:1fr;}
-  .sidebar{width:100%;}
+.card{
+  background:#334155;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
 }
 </style>
 </head>
 <body>
 
-<div class="container">
+<h2>🚀 Zeromarket SaaS</h2>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="logo">⚡ Zeromarket</div>
-    <div class="nav">
-      <button onclick="show('dashboard')">📊 داشبورد</button>
-      <button onclick="show('orders')">📦 سفارش‌ها</button>
-      <button onclick="show('create')">➕ ثبت سفارش</button>
-      <button onclick="logout()">🚪 خروج</button>
-    </div>
+<!-- AUTH -->
+<div id="authBox" class="box">
+  <h3>Login / Register</h3>
+  <input id="email" placeholder="email">
+  <input id="password" type="password" placeholder="password">
+
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- PANEL -->
+<div id="panel" class="hidden">
+
+  <div class="box">
+    <h3>➕ سفارش جدید</h3>
+    <input id="name" placeholder="نام مشتری">
+    <select id="service">
+      <option>Instagram</option>
+      <option>Telegram</option>
+      <option>Design</option>
+    </select>
+    <button onclick="addOrder()">ثبت</button>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
+  <h3>📦 سفارش‌ها</h3>
+  <div id="orders"></div>
 
-    <div class="header">
-      <div class="title">SaaS Dashboard</div>
-      <div class="badge">Online</div>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard">
-
-      <div class="grid">
-        <div class="card">📈 درآمد: 12,450$</div>
-        <div class="card">👥 کاربران: 1,240</div>
-        <div class="card">📦 سفارش‌ها: 320</div>
-      </div>
-
-    </div>
-
-    <!-- CREATE -->
-    <div id="create" class="hidden">
-      <div class="card">
-        <h3>➕ ثبت سفارش</h3>
-        <input id="name" placeholder="نام مشتری">
-        <select id="service">
-          <option>Instagram</option>
-          <option>Telegram</option>
-          <option>Design</option>
-        </select>
-        <button onclick="addOrder()">ثبت</button>
-      </div>
-    </div>
-
-    <!-- ORDERS -->
-    <div id="orders" class="hidden"></div>
-
-  </div>
-
+  <button onclick="logout()">Logout</button>
 </div>
 
 <script>
-// 🔥 Firebase Config (جایگزین کن)
+// 🔥 CONFIG (اینجا واقعی خودت رو بذار)
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
@@ -227,45 +80,67 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// NAV
-function show(id){
-  document.querySelectorAll('.main > div').forEach(d=>{
-    if(d.id !== undefined) d.classList.add('hidden');
-  });
-  document.getElementById(id).classList.remove('hidden');
+// REGISTER
+function register(){
+  auth.createUserWithEmailAndPassword(email.value, password.value);
 }
+
+// LOGIN
+function login(){
+  auth.signInWithEmailAndPassword(email.value, password.value);
+}
+
+// LOGOUT
+function logout(){
+  auth.signOut();
+}
+
+// STATE
+auth.onAuthStateChanged(user=>{
+  if(user){
+    authBox.classList.add('hidden');
+    panel.classList.remove('hidden');
+    loadOrders(user.uid);
+  } else {
+    authBox.classList.remove('hidden');
+    panel.classList.add('hidden');
+  }
+});
 
 // ADD ORDER
 function addOrder(){
+  const user = auth.currentUser;
+
   db.collection("orders").add({
     name:name.value,
     service:service.value,
-    date:new Date().toISOString()
+    status:"pending",
+    userId:user.uid,
+    createdAt:new Date()
   });
+
   name.value="";
 }
 
 // LOAD ORDERS
-db.collection("orders").orderBy("date","desc")
-.onSnapshot(snap=>{
-  orders.innerHTML="";
-  snap.forEach(doc=>{
-    let d=doc.data();
-    orders.innerHTML += `
-      <div class="card order">
-        👤 ${d.name} <br>
-        📌 ${d.service}
-      </div>
-    `;
-  });
-});
-
-// LOGOUT
-function logout(){
-  auth.signOut().then(()=>location.reload());
+function loadOrders(uid){
+  db.collection("orders")
+    .where("userId","==",uid)
+    .onSnapshot(snap=>{
+      orders.innerHTML="";
+      snap.forEach(doc=>{
+        let d=doc.data();
+        orders.innerHTML += `
+          <div class="card">
+            👤 ${d.name} | 📌 ${d.service} | ⏳ ${d.status}
+          </div>
+        `;
+      });
+    });
 }
 </script>
 
