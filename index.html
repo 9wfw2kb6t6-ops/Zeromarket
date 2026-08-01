@@ -2,145 +2,94 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>Zeromarket SaaS</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
+<title>Social Panel</title>
 <style>
 body{
   margin:0;
   font-family:sans-serif;
   background:#0f172a;
   color:white;
-  text-align:center;
 }
-.box{
+header{
   background:#1e293b;
-  padding:20px;
-  margin:20px auto;
-  width:320px;
-  border-radius:12px;
+  padding:15px;
+  text-align:center;
+  font-size:20px;
 }
-input,button,select{
+.container{
+  display:flex;
+}
+.sidebar{
+  width:200px;
+  background:#111827;
+  height:100vh;
+  padding:10px;
+}
+.sidebar button{
   width:100%;
   padding:10px;
   margin:5px 0;
+  background:#1f2937;
+  color:white;
+  border:none;
+  cursor:pointer;
 }
-.hidden{display:none;}
+.main{
+  flex:1;
+  padding:20px;
+}
 .card{
-  background:#334155;
-  margin:10px;
-  padding:10px;
+  background:#1e293b;
+  padding:15px;
+  margin:10px 0;
   border-radius:10px;
 }
+.hidden{display:none;}
 </style>
 </head>
 <body>
 
-<h2>🚀 Zeromarket SaaS</h2>
+<header>📊 Social Media Service Panel</header>
 
-<!-- AUTH -->
-<div id="authBox" class="box">
-  <h3>Login / Register</h3>
-  <input id="email" placeholder="email">
-  <input id="password" type="password" placeholder="password">
+<div class="container">
 
-  <button onclick="register()">Register</button>
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- PANEL -->
-<div id="panel" class="hidden">
-
-  <div class="box">
-    <h3>➕ سفارش جدید</h3>
-    <input id="name" placeholder="نام مشتری">
-    <select id="service">
-      <option>Instagram</option>
-      <option>Telegram</option>
-      <option>Design</option>
-    </select>
-    <button onclick="addOrder()">ثبت</button>
+  <div class="sidebar">
+    <button onclick="show('dashboard')">داشبورد</button>
+    <button onclick="show('services')">سرویس‌ها</button>
+    <button onclick="show('stats')">آمار</button>
   </div>
 
-  <h3>📦 سفارش‌ها</h3>
-  <div id="orders"></div>
+  <div class="main">
 
-  <button onclick="logout()">Logout</button>
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+      <div class="card">👋 خوش آمدی به پنل مدیریت</div>
+      <div class="card">⚡ وضعیت سیستم: فعال</div>
+    </div>
+
+    <!-- SERVICES -->
+    <div id="services" class="hidden">
+      <div class="card">📌 مدیریت اینستاگرام</div>
+      <div class="card">📌 مدیریت تلگرام</div>
+      <div class="card">📌 طراحی محتوا</div>
+      <div class="card">📌 تبلیغات دیجیتال</div>
+    </div>
+
+    <!-- STATS -->
+    <div id="stats" class="hidden">
+      <div class="card">📈 فالوور: 12,450</div>
+      <div class="card">👁 بازدید: 88,210</div>
+      <div class="card">💬 تعامل: 4,320</div>
+    </div>
+
+  </div>
+
 </div>
 
 <script>
-// 🔥 CONFIG (اینجا واقعی خودت رو بذار)
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID",
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// REGISTER
-function register(){
-  auth.createUserWithEmailAndPassword(email.value, password.value);
-}
-
-// LOGIN
-function login(){
-  auth.signInWithEmailAndPassword(email.value, password.value);
-}
-
-// LOGOUT
-function logout(){
-  auth.signOut();
-}
-
-// STATE
-auth.onAuthStateChanged(user=>{
-  if(user){
-    authBox.classList.add('hidden');
-    panel.classList.remove('hidden');
-    loadOrders(user.uid);
-  } else {
-    authBox.classList.remove('hidden');
-    panel.classList.add('hidden');
-  }
-});
-
-// ADD ORDER
-function addOrder(){
-  const user = auth.currentUser;
-
-  db.collection("orders").add({
-    name:name.value,
-    service:service.value,
-    status:"pending",
-    userId:user.uid,
-    createdAt:new Date()
-  });
-
-  name.value="";
-}
-
-// LOAD ORDERS
-function loadOrders(uid){
-  db.collection("orders")
-    .where("userId","==",uid)
-    .onSnapshot(snap=>{
-      orders.innerHTML="";
-      snap.forEach(doc=>{
-        let d=doc.data();
-        orders.innerHTML += `
-          <div class="card">
-            👤 ${d.name} | 📌 ${d.service} | ⏳ ${d.status}
-          </div>
-        `;
-      });
-    });
+function show(id){
+  document.querySelectorAll('.main > div').forEach(d=>d.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
 }
 </script>
 
